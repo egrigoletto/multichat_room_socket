@@ -23,6 +23,43 @@ io.on('connection', function(socket){
 
     socket.on('disconnect', function(){
         console.log('Um usuário se desconectou do chat');
-    console.log('id: ' + socket.id)
+        console.log('id: ' + socket.id)
     })
+
+    socket.on('mensagem_enviada', function(data){
+        console.log('Mensagem enviada por ' + data.apelido + '\n');
+        console.log(data.mensagem);
+        socket.emit('msgRequest',
+        {
+            apelido: data.apelido,
+            mensagem: data.mensagem
+        });
+    });
+    
+    socket.on('mensagem_enviada', function(data){
+        socket.broadcast.emit('msgRequest',
+        {
+            apelido: data.apelido,
+            mensagem: data.mensagem
+        });
+    });
+
+    socket.on('mensagem_enviada', function(data){
+        if (data.apelido_atualizado == 0){
+            socket.emit('participantesParaCliente',
+            {
+                apelido: data.apelido
+            });
+        }
+    });
+
+    socket.on('mensagem_enviada', function(data){
+        if (data.apelido_atualizado == 0){
+            socket.broadcast.emit('participantesParaCliente',
+            {
+                apelido: data.apelido
+            });
+        }
+    });
+    
 });

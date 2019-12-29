@@ -1,4 +1,5 @@
 module.exports.iniciaChat = function(application, req, res, validationResult){
+    var dadosForm = req.body
     var validation = validationResult(req)
     if (validation.errors[0] && validation.errors[0].msg){
         console.error("Houve um erro ao entrar no chat");
@@ -8,12 +9,12 @@ module.exports.iniciaChat = function(application, req, res, validationResult){
         // pega o objeto io setado como global
         application.get('socketIo').emit('msgRequest', 
             {
-                apelido: req.body.apelido,
+                apelido: dadosForm.apelido,
                 mensagem: "Acaba de entrar na sala"
             }
         );
         
-        res.render('chat');
+        res.render('chat', {dadosForm: dadosForm});
     }
     
 }

@@ -80,13 +80,11 @@
 			
 			<div class="row participantes" id="participantes" style="display:none">
 				<div class="col-md-1"></div>
-				<div class="col-md-10">
-					<!-- <span class="participante">
-						<img src="./assets/images/ico_usuario.png" />
-						Jorge
+				<div class="col-md-10" id="profile">
+					<span class="participante">
+						<!-- <img src="./assets/images/ico_usuario.png" /> -->
+						Aqui embaixo estão os participantes do chat
 					</span>
-					 -->
-
 				</div>
 				<div class="col-md-1"></div>
                 
@@ -96,16 +94,16 @@
 		<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
 			<div class="container">
 				<div class="panel-body campo-mensagem">
-					<form>
-						<div class="col-md-12">
-							<div class="input-group">
-								<input type="text" class="form-control" placeholder="Mensagem">
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button">></button>
-								</span>
-							</div>
+					<div class="col-md-12">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Mensagem" id="mensagem" name="mensagem">
+							<input type="hidden" name="apelido" id="apelido" value="<%=dadosForm.apelido%>">
+							<input type="hidden" name="apelido" id="apelido_atualizado" value=0>							
+							<span class="input-group-btn">
+								<button class="btn btn-default" type="button" id="enviar_mensagem">></button>
+							</span>
 						</div>
-					</form>
+					</div>
 				</div>
 			</div>
 		</nav>		
@@ -116,10 +114,11 @@
 		<script>
 			var socket = io('http://localhost');
 
+			// mensagem de entrada no chat
 			socket.on('msgRequest', function(data){
-				var html = "";
+				let html = "";
 				html += '<div class="dialogo">';
-				if (data && data.apelido){ 
+				if (data && data.apelido && data.apelido != ""){ 
 					html += '<h4>'+ data.apelido +'</h4>';
 					html += '<p>' + data.mensagem +'</p>';
 				} else {
@@ -129,7 +128,32 @@
 				html += '</div>';
 
 				$('#dialogos').append(html);
+
+				// ajusta automaticamente o scroll da tela
+				window.scrollTo(0, document.body.scrollHeight)
 			});
+			// envio de mensagem
+			$('#enviar_mensagem').click(function(){
+				socket.emit('mensagem_enviada',
+				{
+					apelido: $('#apelido').val(),
+					mensagem: $('#mensagem').val(),
+					apelido_atualizado: $('#apelido_atualizado').val()
+				}
+				);
+				$('#apelido_atualizado').val(1)
+				$('#mensagem').val(" ");
+			});
+			
+			socket.on('participantesParaCliente', function(data){
+				let html = "";
+				html += '<span class="participante">';
+				html += '<img src="./assets/images/ico_usuario.png" />';
+				html +=  data.apelido;
+				html += '</span>';
+				$('#profile').append(html);
+			});
+			
 		</script>
 	</body>
 </html>

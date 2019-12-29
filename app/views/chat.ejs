@@ -71,31 +71,8 @@
 		<div class="container">
             <div class="row conversa" id="conversa">
 				<div class="col-md-1"></div>
-				<div class="col-md-10">
-					<div class="dialogo">
-						<h4>Jorge</h4>
-						<p>Fala José, blz cara?</p>
-					</div>
-					
-					<div class="dialogo">
-						<h4>José</h4>
-						<p>Opa, tudo certo!</p>
-					</div>
-					
-					<div class="dialogo">
-						<h4>Jorge</h4>
-						<p>Vai estudar mais sobre NodeJS hoje?</p>
-					</div>
-					
-					<div class="dialogo">
-						<h4>José</h4>
-						<p>Sim, com certeza. Vamos trabalhar com Websockets hoje, o assunto é bem interessante</p>
-					</div>
-					
-					<div class="dialogo">
-						<h4>Jorge</h4>
-						<p>Show de bola, comunicação bi-direcional em páginas ou sistemas web é muito bacana mesmo</p>
-					</div>
+				<div class="col-md-10" id="dialogos">
+					<!-- meensagens do chat -->
 				</div>
 				<div class="col-md-1"></div>
                 
@@ -104,20 +81,12 @@
 			<div class="row participantes" id="participantes" style="display:none">
 				<div class="col-md-1"></div>
 				<div class="col-md-10">
-					<span class="participante">
+					<!-- <span class="participante">
 						<img src="./assets/images/ico_usuario.png" />
 						Jorge
 					</span>
-					
-					<span class="participante">
-						<img src="./assets/images/ico_usuario.png" />
-						José
-					</span>
-					
-					<span class="participante">
-						<img src="./assets/images/ico_usuario.png" />
-						Fernando
-					</span>
+					 -->
+
 				</div>
 				<div class="col-md-1"></div>
                 
@@ -146,6 +115,21 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var socket = io('http://localhost');
+
+			socket.on('msgRequest', function(data){
+				var html = "";
+				html += '<div class="dialogo">';
+				if (data && data.apelido){ 
+					html += '<h4>'+ data.apelido +'</h4>';
+					html += '<p>' + data.mensagem +'</p>';
+				} else {
+					html += '<h4>Bem vindo ao chat</h4>';
+					html += '<p>Aguardando novos participantes</p>';
+				}
+				html += '</div>';
+
+				$('#dialogos').append(html);
+			});
 		</script>
 	</body>
 </html>

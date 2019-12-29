@@ -10,7 +10,10 @@ var server = app.listen(80, function() {
 })
 
 //escuta no socket
-var io = require('socket.io').listen(server)
+var io = require('socket.io').listen(server);
+
+//app.set é uma função do nodejs que seta globalmente no app(application) uma variável
+app.set('socketIo', io);
 
 //cria a concexão no websocket 
 //evento de conexão, verifica quando do lado do cliente é feita uma tentativa de conexão

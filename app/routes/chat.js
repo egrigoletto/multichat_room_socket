@@ -1,9 +1,18 @@
-module.exports = function(application){
-    application.post('/chat', function(req, res){
-        res.render('chat')
+module.exports = function(application, req, res){
+    const {check, validationResult} = require('express-validator');
+    
+    application.post('/chat', [
+        check('apelido','Apelido é obrigatório').not().isEmpty(),
+        check('apelido','O apelido deve conter entre 10 e 20 caracteres').isLength({min: 3, max: 20})
+      ],function(req, res){
+            application.app.controllers.chat.iniciaChat(application, req, res, validationResult)
     });
 
-    application.get('/chat', function(req, res){
-        res.render('chat')
+    application.get('/chat',[
+        check('apelido','Apelido é obrigatório').not().isEmpty(),
+        check('apelido','O apelido deve conter entre 10 e 20 caracteres').isLength({min: 3, max: 20})
+      ] ,function(req, res){
+          application.app.controllers.chat.iniciaChat(application, req, res, validationResult)
     });
 }
+
